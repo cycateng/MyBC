@@ -10,6 +10,14 @@ class Block:
         self.data = data
         self.hash = str(hash)
 
+    def printBlockMember(self):
+        print("--------------------Block0---------------------")
+        print(f"Index: {index}")
+        print(f"Timestamp: {timestamp}")
+        print(f"Data: {data}")
+        print(f"Hash: {hash}")
+        print(f"PreviousHash: {previousHash}")
+
 def calculateHash(Block):
     pass
 
@@ -24,3 +32,6 @@ print(f"Timestamp: {timestamp}")
 print(f"Data: {data}")
 print(f"Hash: {initialHash}")
 print(f"PreviousHash: {previousHash}")
+Block0 = Block(index, previousHash, timestamp, data, initialHash)
+print()
+Block0.printBlockMember()
