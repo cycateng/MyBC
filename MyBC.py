@@ -1,6 +1,7 @@
 from hashlib import sha256
 import datetime
 
+# Block Class
 class Block:
     
     def __init__(self, index, previousHash, timestamp, data):
@@ -10,7 +11,7 @@ class Block:
         self.data = data
         self.hash = "empty"
 
-    # 生成されたブロックの情報を出力する
+    # ブロックの情報を出力する機能
     def printBlockMember(self):
         print(f"--------------------Block{self.index}---------------------")
         print(f"Index: {self.index}")
@@ -19,10 +20,6 @@ class Block:
         print(f"Hash: {self.hash}")
         print(f"PreviousHash: {self.previousHash}")
         print()
-
-    # ブロックのhashをメンバー変数から計算する
-#    def calcBlockHash(self):
-#        self.hash = str(sha256((str(self.index) + str(self.timestamp) + self.data + self.previousHash).encode()).hexdigest())
 
 # ブロックのハッシュを計算し返す機能
 # 引数にBlockのインスタンスを渡す
@@ -65,37 +62,31 @@ def checkBlockChain():
 
     print("Finish!")
 
-# Blockを格納するlist
+# main関数
+def main():
+    index = 0
+    previousHash = 0
+    timestamp = datetime.datetime.now()
+    data = "block0data"
+
+    for i in range(9):
+        Blocki = Block(index, previousHash, timestamp, data)
+        Blocki.hash = calcBlockHash(Blocki)
+        Blocki.printBlockMember()
+        blockList.append(Blocki)
+
+        index += 1
+        timestamp += datetime.timedelta(seconds=10)
+        data = f"block{index}data"
+        previousHash = Blocki.hash
+
+    print(blockList)
+    print()
+    print("Block6のtimestampを改ざん")
+    blockList[6].timestamp = datetime.datetime.now()
+    printBlockChain()
+    checkBlockChain()
+
 blockList = []
-
-# Block0を生成するための初期値
-index = 0
-previousHash = 0
-timestamp = datetime.datetime.now()
-data = "block0data"
-
-# forを0-8で回す
-# 各ブロックのタイムスタンプの時差は10秒にしている
-# 各ブロックの変数dataはblock[ブロックのindex]というフォーマットにしている
-for i in range(9):
-    Blocki = Block(index, previousHash, timestamp, data)
-    Blocki.hash = calcBlockHash(Blocki)
-    Blocki.printBlockMember()
-    blockList.append(Blocki)
-
-    # ブロック情報の更新
-    index += 1
-    timestamp += datetime.timedelta(seconds=10)
-    data = f"block{index}data"
-    previousHash = Blocki.hash
-
-print(blockList)
-print()
-
-#print("Block3のhashを改ざん")
-#blockList[3].hash = str(sha256("このブロックのハッシュを改ざんしてやったぜ!".encode()).hexdigest())
-print("Block6のtimestampを改ざん")
-blockList[6].timestamp = datetime.datetime.now()
-
-printBlockChain()
-checkBlockChain()
+if __name__ == '__main__':
+    main()
