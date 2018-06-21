@@ -1,5 +1,6 @@
 from hashlib import sha256
 import datetime
+import os
 
 # Block Class
 class Block:
@@ -29,8 +30,8 @@ def calcBlockHash(Block):
 
 # 現在のブロックチェーンを出力
 def printBlockChain():
-    for i in range(9):
-        blockList[i].printBlockMember()
+    for i in blockList:
+        i.printBlockMember()
 
 # ブロックチェーン検証機能
 def checkBlockChain():
@@ -67,25 +68,43 @@ def main():
     index = 0
     previousHash = 0
     timestamp = datetime.datetime.now()
-    data = "block0data"
+    data = "initial data"
 
-    for i in range(9):
+    j = 7
+    for i in range(100):
         Blocki = Block(index, previousHash, timestamp, data)
         Blocki.hash = calcBlockHash(Blocki)
-        Blocki.printBlockMember()
+        #Blocki.printBlockMember()
         blockList.append(Blocki)
 
         index += 1
-        timestamp += datetime.timedelta(seconds=10)
-        data = f"block{index}data"
+        path = f"logs/system.log.{j}.gz"
+        try:
+            f = open(path,'rb')
+        except FileNotFoundError:
+            #print("これ以上ログファイルが存在しません")
+            BLocki = Block(index, previousHash, timestamp, data)
+            Blocki.hash = calcBlockHash(Blocki)
+            blockList.append(Blocki)
+            break
+            
+        #timestamp += datetime.timedelta(seconds=10)
+        timestamp = datetime.datetime.fromtimestamp(os.stat(path).st_mtime)
+        #data = f"block{index}data"
+        data = sha256(f.read()).hexdigest()
         previousHash = Blocki.hash
-
+        f.close()
+        j -= 1
+    
+    printBlockChain()
+    '''
     print(blockList)
     print()
     print("Block6のtimestampを改ざん")
     blockList[6].timestamp = datetime.datetime.now()
     printBlockChain()
     checkBlockChain()
+    '''
 
 blockList = []
 if __name__ == '__main__':
