@@ -65,36 +65,35 @@ def checkBlockChain():
 
 # main関数
 def main():
+    print("Genesis block create")
     index = 0
     previousHash = 0
     timestamp = datetime.datetime.now()
     data = "initial data"
 
-    j = 7
-    for i in range(100):
-        Blocki = Block(index, previousHash, timestamp, data)
-        Blocki.hash = calcBlockHash(Blocki)
+    logs = os.listdir('logs/')
+    logs.reverse()
+    print(logs)
+    for path in logs:
+        Blockindex = Block(index, previousHash, timestamp, data)
+        Blockindex.hash = calcBlockHash(Blockindex)
         #Blocki.printBlockMember()
-        blockList.append(Blocki)
+        blockList.append(Blockindex)
 
-        index += 1
-        path = f"logs/system.log.{j}.gz"
+        print(path)
         try:
-            f = open(path,'rb')
+            f = open(f"logs/{path}",'rb')
         except FileNotFoundError:
-            #print("これ以上ログファイルが存在しません")
-            BLocki = Block(index, previousHash, timestamp, data)
-            Blocki.hash = calcBlockHash(Blocki)
-            blockList.append(Blocki)
+            print("ログファイルが存在しません")
             break
             
         #timestamp += datetime.timedelta(seconds=10)
-        timestamp = datetime.datetime.fromtimestamp(os.stat(path).st_mtime)
+        timestamp = datetime.datetime.fromtimestamp(os.stat(f"logs/{path}").st_mtime)
         #data = f"block{index}data"
         data = sha256(f.read()).hexdigest()
-        previousHash = Blocki.hash
+        previousHash = Blockindex.hash
+        index += 1
         f.close()
-        j -= 1
     
     printBlockChain()
     '''
