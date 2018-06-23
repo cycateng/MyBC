@@ -30,8 +30,8 @@ def calcBlockHash(Block):
 
 # 現在のブロックチェーンを出力
 def printBlockChain():
-    for i in blockList:
-        i.printBlockMember()
+    for block in blockList:
+        block.printBlockMember()
 
 # ブロックチェーン検証機能
 def checkBlockChain():
@@ -41,10 +41,10 @@ def checkBlockChain():
     print("previousHash:")
     print("hash:")
     print()
-    for i in range(9)[::-1]:
+    for i in range(len(blockList))[::-1]:
         if i == 0:
             break
-        
+
         #対象のブロックの1つ前のブロックのハッシュを計算し
         #対象のブロックのpreviousHashと計算したハッシュを比較する
         preHash = blockList[i].previousHash
@@ -65,27 +65,26 @@ def checkBlockChain():
 
 # main関数
 def main():
-    print("Genesis block create")
+    print("Genesis block created")
     index = 0
     previousHash = 0
     timestamp = datetime.datetime.now()
-    data = "initial data"
+    data = "This is Genesis Block!"
 
     logs = os.listdir('logs/')
     logs.reverse()
-    print(logs)
     for path in logs:
         Blockindex = Block(index, previousHash, timestamp, data)
         Blockindex.hash = calcBlockHash(Blockindex)
         #Blocki.printBlockMember()
         blockList.append(Blockindex)
 
-        print(path)
         try:
             f = open(f"logs/{path}",'rb')
+        except IOError:
+            print("ファイルが開けません")
         except FileNotFoundError:
             print("ログファイルが存在しません")
-            break
             
         #timestamp += datetime.timedelta(seconds=10)
         timestamp = datetime.datetime.fromtimestamp(os.stat(f"logs/{path}").st_mtime)
@@ -96,14 +95,7 @@ def main():
         f.close()
     
     printBlockChain()
-    '''
-    print(blockList)
-    print()
-    print("Block6のtimestampを改ざん")
-    blockList[6].timestamp = datetime.datetime.now()
-    printBlockChain()
     checkBlockChain()
-    '''
 
 blockList = []
 if __name__ == '__main__':
